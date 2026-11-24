@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Browser-based serial terminal with configurable connections, logging, and live plotting."><meta name="color-scheme" content="dark"><link rel="icon" href="data:,"><title>BrowserSerialTool</title><style>:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;color:#dce5ed;background:#0c1117;font-size:14px;--muted:#8c9aa9;--border:#28313b;--accent:#bcf47b}*{box-sizing:border-box}body{margin:0}header{border-bottom:1px solid var(--border);padding:20px 5%;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;gap:12px;align-items:center;font-size:17px;font-weight:700;text-decoration:none;color:inherit;letter-spacing:-.5px}.mark{background:var(--accent);color:#172214;padding:5px 9px;border-radius:7px;font:800 20px monospace}.mark span{margin-left:2px}.version{font:11px monospace;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:3px 5px}.local{color:var(--accent);font-size:12px}main{max-width:1440px;margin:auto;padding:24px 5% 20px}.intro{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}h1{font-size:22px;letter-spacing:-.5px;font-weight:600;margin:0}p{color:var(--muted);line-height:1.6;margin:8px 0}h2{font-size:14px;font-weight:600;margin:0}button,input,select{font:inherit;border:1px solid var(--border);border-radius:6px;color:inherit;background:#111820;padding:10px 12px;min-width:0}button{cursor:pointer;font-size:12px;font-weight:550;white-space:nowrap}button:hover:enabled{border-color:#819264;background:#253025}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.primary{background:var(--accent);border-color:var(--accent);color:#18240f}.primary:hover:enabled{background:#d0ffa3;color:#18240f}.secondary{background:#1a222c}.wide{width:100%;margin-top:10px}.workspace{display:grid;grid-template-columns:270px minmax(0,1fr);gap:20px;align-items:start}.panel{border:1px solid var(--border);border-radius:10px;background:#121922;overflow:hidden}aside{padding:20px}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px}.badge{border-radius:20px;font-size:10px;background:#29303a;color:#a5b0bd;padding:5px 9px}.badge.online{background:#263d2b;color:var(--accent)}label{display:block;color:#a4b0bd;font-size:11px;margin:17px 0 8px}input,select{width:100%;font-size:12px}select{padding-right:8px}.port-row{display:flex;gap:6px}.port-row select{flex:1}.port-row button{font-size:19px;padding:5px 10px}.hint{font-size:11px;color:#7f8d9e;line-height:1.65}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}fieldset{border:0;margin:0;padding:0}details{margin-top:20px;border-top:1px solid var(--border);padding-top:16px}summary{font-size:12px;cursor:pointer;color:#a4b0bd}.check{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:11px;white-space:nowrap}.check input{width:auto;accent-color:var(--accent)}details .check{margin:8px 14px 8px 0}.main-column{min-width:0;display:grid;gap:18px}.terminal-panel>.panel-title{padding:0 18px;border-bottom:1px solid var(--border)}.tabs{display:flex;gap:20px;align-self:stretch}.tabs button{border:0;border-radius:0;background:none;padding:16px 0;color:var(--muted)}.tabs [aria-selected=true]{border-bottom:2px solid var(--accent);color:var(--accent)}#traffic{font:10px ui-monospace,monospace;color:var(--muted)}.view-tools{display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid #202933;flex-wrap:wrap}.view-tools button{border:0;background:none;padding:3px;color:#a4b0bd}.view-tools #pause{margin-left:auto}#terminal{height:370px;overflow:auto;padding:16px 18px;background:#0e141c;font:12px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.entry{display:flex;gap:12px}.entry time{color:#637385;flex-shrink:0}.entry b{font-size:10px;color:#87b4c7;flex-shrink:0}.entry.tx b,.entry.tx .payload{color:#bcf47b}.payload{min-width:0}.empty{text-align:center;padding:70px 10px;color:#6d7b8d;font-family:system-ui}.empty h3{font-size:15px;font-weight:500;color:#b6c0cc}.empty p{font-size:12px}.terminal-footer{display:flex;justify-content:space-between;padding:10px 18px;font-size:10px;color:var(--muted);border-block:1px solid var(--border)}.terminal-footer i{display:inline-block;background:#6a7584;border-radius:50%;width:6px;height:6px;margin-right:8px}.terminal-footer i.online{background:var(--accent)}#sendForm{padding:14px 18px 12px}.send-options{display:flex;gap:18px;margin-bottom:10px}.send-options label{display:flex;align-items:center;gap:8px;margin:0}.send-options select{width:auto;padding:5px;font-size:11px}.send-row{display:flex;gap:10px}.send-row input{flex:1;background:#0c1219}.send-row button{min-width:88px}#sendForm .hint{margin:8px 0 0}.capture{padding:24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.capture h2{font-size:14px}.capture p{font-size:11px;margin-bottom:0}.export-buttons{display:flex;gap:8px;flex-wrap:wrap}#status{font-size:12px;min-height:25px;padding-top:12px}#status.error{color:#ffaf9b}footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--border);padding-top:20px;margin-top:22px;color:#687888;font-size:10px}footer a{color:#8c9aa9;text-decoration:none}.notice{background:#322a1b;border:1px solid #716036;border-radius:8px;padding:14px;margin-bottom:20px;color:#e6c995;font-size:12px}#plotView{height:370px;background:#0e141c;padding:12px}canvas{display:block;width:100%;height:295px}#legend{display:flex;gap:12px;flex-wrap:wrap;font:10px monospace;min-height:16px}.plot-hint{margin:5px 0} [hidden]{display:none!important}@media(min-width:1500px){#terminal,#plotView{height:450px}canvas{height:375px}}@media(max-width:1000px){.capture{align-items:flex-start;flex-direction:column}.workspace{grid-template-columns:240px minmax(0,1fr)}.view-tools{gap:9px}}@media(max-width:700px){header{padding:16px}.brand{font-size:14px}.local{font-size:10px}main{padding:28px 16px}.intro{gap:12px}.workspace{grid-template-columns:1fr}aside .panel-title{min-height:28px}.two{gap:14px}.terminal-panel>.panel-title{padding:0 12px}.view-tools{padding:10px 12px}#terminal{height:330px;padding:12px;font-size:11px}.entry{gap:7px}.capture{padding:18px}.send-options{gap:12px;flex-wrap:wrap}footer{flex-direction:column;gap:8px}.version{display:none}}
+
+.profile-controls{border-block:1px solid var(--border);margin-top:18px;padding:0 0 14px}.button-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.button-row input{flex:1;min-width:130px}.button-row button{flex-shrink:0}.search-tools{display:flex;gap:10px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap}.search-tools>label:first-child{margin:0}.search-tools input[type=search]{flex:1;min-width:140px}.search-tools select{width:auto}.search-tools #matchCount{font-size:10px;color:var(--muted)}mark{background:#bcf47b;color:#15200e;border-radius:2px}.shortcuts{margin:0 18px 16px}.shortcut-row{display:flex;gap:8px;align-items:center;padding-top:10px}.shortcut-row .shortcut-send{flex:1;overflow:hidden;text-overflow:ellipsis;text-align:left}.shortcut-row small{color:var(--muted);font:10px monospace}.recording{padding:18px 24px}.recording .panel-title{min-height:30px}#recordBadge.online{color:var(--accent)}@media(max-width:700px){.search-tools{padding:10px 12px}.search-tools>label:first-child{width:100%}.recording{padding:18px}.profile-controls .button-row button{flex:1}}
+
+#profileDetails{margin-top:14px;padding-top:14px}#profileDetails .profile-controls{border:0;margin:0;padding:0}
+</style></head>
+<body>
+<header><a class="brand" href="#"><span class="mark">B<span>›</span></span> BrowserSerialTool<span class="version">v1.1</span></a><span class="local">Web Serial</span></header>
+<main>
+<div class="intro"><h1>Serial terminal</h1><button id="demo">Start demo</button></div>
+<div id="unsupported" class="notice" hidden>Web Serial is unavailable. Use desktop Chrome or Edge in a secure context (HTTPS, localhost, or a supported local file). The demo still works.</div>
+<div class="workspace">
+<aside class="panel"><div class="panel-title"><h2>Connection</h2><span id="badge" class="badge">Offline</span></div>
+<label for="ports">Serial port</label><div class="port-row"><select id="ports" aria-label="Authorized serial ports"><option>No authorized ports</option></select><button id="refresh" title="Refresh authorized ports" aria-label="Refresh authorized ports">↻</button></div><button id="choose" class="secondary wide">＋ Choose a port</button><p class="hint">Choose a port to grant access. Refresh lists authorized devices; the browser chooser shows new ports.</p>
+<details id="profileDetails"><summary>Saved connection profiles</summary><fieldset id="profileControls" class="profile-controls"><label for="profiles">Connection profiles</label><select id="profiles"><option value="">Choose a saved profile</option></select><div class="button-row"><button id="loadProfile" class="secondary" disabled>Load</button><button id="deleteProfile" disabled>Delete</button></div><label for="profileName">Profile name</label><input id="profileName" maxlength="60" placeholder="e.g. Lab instrument"><button id="saveProfile" class="secondary wide">Save current settings</button><p class="hint">Saved in this browser. Includes serial settings, send mode, and line ending.</p></fieldset></details>
+<fieldset id="settings"><label for="baud">Baud rate</label><input id="baud" type="number" min="1" max="4000000" step="1" value="115200" list="rates"><datalist id="rates"><option value="9600"><option value="19200"><option value="38400"><option value="57600"><option value="115200"><option value="230400"><option value="460800"><option value="921600"></datalist>
+<div class="two"><div><label for="bits">Data bits</label><select id="bits"><option>8</option><option>7</option></select></div><div><label for="stop">Stop bits</label><select id="stop"><option>1</option><option>2</option></select></div></div>
+<div class="two"><div><label for="parity">Parity</label><select id="parity"><option value="none">None</option><option value="even">Even</option><option value="odd">Odd</option></select></div><div><label for="flow">Flow control</label><select id="flow"><option value="none">None</option><option value="hardware">Hardware</option></select></div></div></fieldset>
+<button id="connect" class="primary wide">Connect</button><button id="disconnect" class="secondary wide" disabled>Disconnect</button>
+<details><summary>Control signals</summary><p class="hint">Changing DTR / RTS may reset a board. Hardware flow control manages RTS automatically.</p><label class="check"><input type="checkbox" id="dtr" disabled>DTR</label><label class="check"><input type="checkbox" id="rts" disabled>RTS</label><button id="signals" class="secondary wide" disabled>Read input signals</button><p id="signalInfo" class="hint">CTS / DSR / DCD / RI: —</p></details>
+</aside>
+<section class="main-column">
+<div class="panel terminal-panel"><div class="panel-title"><div class="tabs" role="tablist" aria-label="Data view"><button id="terminalTab" role="tab" aria-selected="true" aria-controls="terminalView">Terminal</button><button id="plotTab" role="tab" aria-selected="false" aria-controls="plotView">Live plot</button></div><span id="traffic">RX 0 B · TX 0 B</span></div>
+<div class="view-tools"><label class="check"><input id="timestamps" type="checkbox" checked>Time</label><label class="check"><input id="hexView" type="checkbox">Hex</label><label class="check"><input id="autoscroll" type="checkbox" checked>Auto-scroll</label><button id="pause">Pause view</button><button id="clear">Clear</button></div>
+<div class="search-tools"><label for="search">Search / filter</label><input id="search" type="search" maxlength="200" placeholder="Find text in retained entries…"><label class="check"><input id="filterOnly" type="checkbox">Only matches</label><select id="direction" aria-label="Filter direction"><option value="all">RX + TX</option><option value="RX">RX only</option><option value="TX">TX only</option></select><span id="matchCount" role="status">0 matches</span></div>
+<div id="terminalView" role="tabpanel" aria-labelledby="terminalTab"><div id="terminal" tabindex="0" aria-label="Serial terminal"><div class="empty"><h3>No serial data</h3><p>Select a port and connect to begin receiving data.</p></div></div></div>
+<div id="plotView" role="tabpanel" aria-labelledby="plotTab" hidden><canvas id="plot" aria-label="Live serial data plot" role="img"></canvas><div id="legend"></div><p class="hint plot-hint">Send numeric lines: 12.3, 24.5, 8 · up to 8 channels · latest 500 samples · auto-scaled</p></div>
+<div class="terminal-footer"><span><i id="activity"></i><span id="sessionLabel">No active session</span></span><span id="bufferInfo">0 / 10,000 entries</span></div>
+<form id="sendForm"><div class="send-options"><label>Send as <select id="sendMode"><option value="text">Text (UTF-8)</option><option value="hex">Hex bytes</option></select></label><label>Line ending <select id="ending"><option value="\n">LF</option><option value="\r\n">CR + LF</option><option value="\r">CR</option><option value="">None</option></select></label></div><div class="send-row"><input id="command" aria-label="Command to send" placeholder="Enter a command…" autocomplete="off" maxlength="65536"><button id="send" class="primary" disabled>Send ↵</button></div><p class="hint">Enter to send · ↑ / ↓ for command history · hex mode sends exact bytes</p></form><details class="shortcuts"><summary>Command shortcuts <span id="shortcutCount">(0)</span></summary><p class="hint">Save the command above with its send mode and line ending. Send buttons transmit immediately.</p><div class="button-row"><input id="shortcutName" aria-label="Shortcut name" maxlength="60" placeholder="e.g. Read measurement"><button id="saveShortcut" class="secondary">Save command</button></div><div id="shortcutList"></div></details></div>
+<div class="panel capture"><div><h2>Export session</h2><p>Export the buffer or record continuously to a local file.</p></div><div class="export-buttons"><button id="exportText" class="secondary">↓ Text log</button><button id="exportCSV" class="secondary">↓ CSV log</button><button id="exportPlot" class="secondary">↓ Plot CSV</button></div></div>
+<div class="panel recording"><div class="panel-title"><h2>Continuous recording</h2><span id="recordBadge" class="badge">Not recording</span></div><p id="recordInfo" class="hint" role="status">Record new RX/TX traffic beyond the buffer limit. Stop &amp; save finalizes the file.</p><div class="button-row"><button id="startRecording" class="secondary">● Record to CSV…</button><button id="stopRecording" disabled>Stop &amp; save</button></div></div>
+</section></div><p id="status" role="status" aria-live="polite">Ready. Choose a port, then connect.</p>
+<footer><span>BrowserSerialTool</span><a href="https://developer.chrome.com/docs/capabilities/serial/" target="_blank" rel="noreferrer">About browser support ↗</a></footer>
+</main><script>/* BrowserSerialTool core. No dependencies; also exercised by Node tests. */
+(function (root) {
+  'use strict';
+  function hexBytes(text) {
+    const compact = text.replace(/\s+/g, '');
+    if (!compact || compact.length % 2 || !/^[\da-f]+$/i.test(compact)) throw new Error('Enter complete hexadecimal byte pairs, for example: A0 01 FF');
+    return Uint8Array.from(compact.match(/../g), x => parseInt(x, 16));
+  }
+  function numbers(line) {
+    const parts = line.trim().split(/[,;\s]+/);
+    if (!parts.length || parts.length > 8 || parts.some(x => !/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(x))) return null;
+    const values = parts.map(Number);
+    return values.every(Number.isFinite) ? values : null;
+  }
+  class Lines {
+    constructor(emit, limit = 16384) { this.emit = emit; this.limit = limit; this.pending = ''; this.cr = false; }
+    push(text) {
+      for (const char of text) {
+        if (char === '\n' && this.cr) { this.cr = false; continue; }
+        this.cr = char === '\r';
+        if (char === '\r' || char === '\n') { this.emit(this.pending); this.pending = ''; }
+        else { this.pending += char; if (this.pending.length >= this.limit) { this.emit(this.pending); this.pending = ''; } }
+      }
+    }
+    flush() { if (this.pending) this.emit(this.pending); this.pending = ''; this.cr = false; }
+  }
+  class SerialConnection {
+    constructor(onData, onEnd) { this.onData = onData; this.onEnd = onEnd; this.port = null; this.closing = false; }
+    async open(port, options) {
+      if (this.port) throw new Error('A port is already open.');
+      await port.open(options);
+      this.port = port;
+      this.closing = false;
+      try { this.writer = port.writable.getWriter(); this.reader = port.readable.getReader(); }
+      catch (error) { await this.close(); throw error; }
+      this.readTask = this.readLoop();
+    }
+    async readLoop() {
+      let failure;
+      try { while (!this.closing) { const {value, done} = await this.reader.read(); if (done) break; this.onData(value); } }
+      catch (error) { if (!this.closing) failure = error; }
+      finally { this.reader.releaseLock(); this.reader = null; }
+      if (!this.closing) queueMicrotask(() => this.close().then(() => this.onEnd(failure)));
+    }
+    async send(bytes) {
+      if (!this.writer || this.closing) throw new Error('Connect a serial port first.');
+      await this.writer.write(bytes);
+    }
+    async close() {
+      if (this.closing) return this.closeTask;
+      this.closing = true;
+      this.closeTask = (async () => {
+        try { await this.reader?.cancel(); } catch {}
+        await this.readTask;
+        if (this.writer) { try { await this.writer.abort(); } catch {} this.writer.releaseLock(); this.writer = null; }
+        try { await this.port?.close(); } finally { this.port = null; }
+      })();
+      return this.closeTask;
+    }
+  }
+  const endings = ['\\n', '\\r\\n', '\\r', ''];
+  function validSend(value) {
+    return value && ['text', 'hex'].includes(value.mode) && endings.includes(value.ending);
+  }
+  function readPreferences(raw) {
+    const data = JSON.parse(raw || '{}');
+    if (!data || typeof data !== 'object') throw new Error('Invalid saved preferences.');
+    const named = item => item && typeof item.name === 'string' && item.name.trim() && item.name.length <= 60;
+    return {
+      profiles: (Array.isArray(data.profiles) ? data.profiles : []).filter(p => named(p) && validSend(p) &&
+        Number.isInteger(p.baud) && p.baud >= 1 && p.baud <= 4000000 && [7, 8].includes(p.bits) &&
+        [1, 2].includes(p.stop) && ['none', 'even', 'odd'].includes(p.parity) && ['none', 'hardware'].includes(p.flow)).slice(0, 50),
+      shortcuts: (Array.isArray(data.shortcuts) ? data.shortcuts : []).filter(p => named(p) && validSend(p) &&
+        typeof p.command === 'string' && p.command.length <= 65536).slice(0, 50)
+    };
+  }
+  // CSV cells are quoted and formula prefixes neutralized for spreadsheet imports.
+  function csvCell(value) {
+    let s = String(value);
+    if (/^[\s]*[=+@-]/.test(s)) s = "'" + s;
+    return '"' + s.replaceAll('"', '""') + '"';
+  }
+  function csvEntry(entry) { return [entry.time, entry.direction, entry.text, entry.hex].map(csvCell).join(',') + '\r\n'; }
+  const csvHeader = 'timestamp,direction,text,hex\r\n';
+  class DiskLogger {
+    constructor(writer, onError, limit = 8 * 1024 * 1024) {
+      this.writer = writer; this.onError = onError; this.limit = limit;
+      this.queue = []; this.pending = 0; this.bytes = 0; this.accepting = true;
+    }
+    append(text) {
+      if (!this.accepting || this.error) return;
+      const bytes = new TextEncoder().encode(text);
+      if (this.pending + bytes.length > this.limit) {
+        this.fail(new Error('Disk cannot keep up: recording stopped at the 8 MiB pending-write limit.')); return;
+      }
+      this.queue.push(bytes); this.pending += bytes.length;
+      if (!this.task) this.task = this.drain();
+    }
+    async drain() {
+      try {
+        while (this.queue.length && !this.error) {
+          const chunk = this.queue.shift();
+          await this.writer.write(chunk);
+          this.pending -= chunk.length; this.bytes += chunk.length;
+        }
+      } catch (error) { this.fail(error); }
+      finally { this.task = null; }
+    }
+    fail(error) {
+      if (this.error) return;
+      this.error = error; this.accepting = false; this.queue = [];
+      this.onError(error);
+    }
+    async stop() {
+      if (this.stopTask) return this.stopTask;
+      this.accepting = false;
+      this.stopTask = (async () => {
+        await this.task;
+        if (this.error) { try { await this.writer.abort(); } catch {} throw this.error; }
+        try { await this.writer.close(); } catch (error) { this.fail(error); try { await this.writer.abort(); } catch {} throw error; }
+      })();
+      return this.stopTask;
+    }
+  }
+  const api = {hexBytes, numbers, Lines, SerialConnection, readPreferences, csvCell, csvEntry, csvHeader, DiskLogger};
+  root.BST = api;
+  if (typeof module !== 'undefined') module.exports = api;
+})(globalThis);
+</script><script>(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const {Lines, SerialConnection, hexBytes, numbers, readPreferences, csvEntry, csvHeader, DiskLogger} = BST;
+  let preferences = {profiles:[], shortcuts:[]}, logger = null, recordingBusy = false;
+  const preferenceKey = 'BrowserSerialTool.preferences.v1';
+  const supported = 'serial' in navigator && window.isSecureContext;
+  let ports = [], entries = [], samples = [], rx = 0, tx = 0, paused = false, demoTimer = null, busy = false, rendering = false;
+  let decoder = new TextDecoder(), history = [], historyIndex = 0, demoStart = 0;
+  const colors = ['#bcf47b','#78c7f2','#f6b87a','#d39efa','#f18ea8','#77dec4','#f4df7f','#abb9ff'];
+  const status = (message, error = false) => { $('status').textContent = message; $('status').classList.toggle('error', error); };
+  const guard = fn => async (...args) => { try { await fn(...args); } catch (e) { if (!['NotFoundError', 'AbortError'].includes(e.name)) status(e.message, true); } };
+  const connection = new SerialConnection(receive, error => { flush(); update(); status(error ? `Serial read ended: ${error.message}` : 'Device disconnected.', !!error); refresh(); });
+  const lines = new Lines(line => { add('RX', line); const values = numbers(line); if (values) { samples.push({time:new Date().toISOString(), values}); if (samples.length > 500) samples.shift(); } });
+  function flush() { lines.push(decoder.decode()); lines.flush(); decoder = new TextDecoder(); }
+  function add(direction, text, hex = '') {
+    const entry = {time:new Date().toISOString(), direction, text, hex};
+    entries.push(entry);
+    logger?.append(csvEntry(entry));
+    if (entries.length > 10000) entries.shift();
+    schedule();
+  }
+  function receive(bytes) {
+    rx += bytes.length;
+    // Raw bytes are recorded separately from decoded lines, preserving binary data for hex view/export.
+    const hex = Array.from(bytes, b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
+    add('RAW', '', hex);
+    lines.push(decoder.decode(bytes, {stream:true}));
+    schedule();
+  }
+  function update() {
+    const live = !!connection.port && !connection.closing, demo = !!demoTimer;
+    $('badge').textContent = demo ? 'Demo' : live ? 'Connected' : 'Offline';
+    $('badge').classList.toggle('online', live || demo);
+    $('activity').classList.toggle('online', live || demo);
+    $('sessionLabel').textContent = demo ? 'Simulated data · no hardware connected' : live ? `Serial connected · ${$('baud').value} baud` : 'No active session';
+    $('settings').disabled = live || busy || demo;
+    $('profileControls').disabled = live || busy || demo;
+    updateProfileButtons();
+    document.querySelectorAll('.shortcut-send').forEach(button => { button.disabled = (!live && !demo) || busy; });
+    for (const id of ['choose','refresh','ports']) $(id).disabled = !supported || live || busy || demo;
+    $('connect').disabled = !supported || !ports.length || live || busy || demo;
+    $('disconnect').disabled = (!live && !demo) || busy;
+    $('send').disabled = (!live && !demo) || busy;
+    $('demo').disabled = live || busy;
+    $('demo').textContent = demo ? 'Stop demo' : 'Start demo';
+    $('dtr').disabled = $('signals').disabled = !live;
+    $('rts').disabled = !live || $('flow').value === 'hardware';
+  }
+  async function refresh() {
+    if (!supported) return;
+    try {
+      const old = ports[Number($('ports').value)];
+      ports = await navigator.serial.getPorts();
+      $('ports').replaceChildren();
+      if (!ports.length) $('ports').add(new Option('No authorized ports', ''));
+      ports.forEach((port, i) => { const info = port.getInfo(); const usb = info.usbVendorId === undefined ? 'Serial device' : `USB ${info.usbVendorId.toString(16).padStart(4,'0')}:${info.usbProductId.toString(16).padStart(4,'0')}`; $('ports').add(new Option(`${i + 1} · ${usb}`, String(i))); });
+      if (ports.includes(old)) $('ports').value = String(ports.indexOf(old));
+      update();
+    } catch (error) { status(`Cannot list ports: ${error.message}`, true); }
+  }
+  $('refresh').onclick = guard(async () => { await refresh(); status('Authorized ports refreshed. Choose a port to find new devices.'); });
+  $('choose').onclick = guard(async () => { const port = await navigator.serial.requestPort(); await refresh(); $('ports').value = String(ports.indexOf(port)); status('Port authorized. Check settings, then connect.'); });
+  $('connect').onclick = guard(async () => {
+    const baudRate = Number($('baud').value);
+    if (!Number.isInteger(baudRate) || baudRate < 1 || baudRate > 4000000) throw new Error('Baud rate must be an integer from 1 to 4,000,000.');
+    const port = ports[Number($('ports').value)];
+    if (!port) throw new Error('Choose a port first.');
+    busy = true; update();
+    try { await connection.open(port, {baudRate,dataBits:Number($('bits').value),stopBits:Number($('stop').value),parity:$('parity').value,flowControl:$('flow').value,bufferSize:65536}); $('dtr').checked = $('rts').checked = false; status('Connected. Opening a serial port may reset some boards.'); }
+    finally { busy = false; update(); }
+  });
+  async function disconnect() {
+    if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
+    busy = true; update();
+    try { await connection.close(); flush(); status('Disconnected. Buffered data is available for export.'); }
+    finally { busy = false; update(); }
+  }
+  $('disconnect').onclick = guard(disconnect);
+  for (const [id, signal] of [['dtr','dataTerminalReady'],['rts','requestToSend']]) $(id).onchange = guard(async () => { try { await connection.port.setSignals({[signal]:$(id).checked}); status(`${id.toUpperCase()} updated.`); } catch(e) { $(id).checked = !$(id).checked; throw e; } });
+  $('signals').onclick = guard(async () => { const s = await connection.port.getSignals(); $('signalInfo').textContent = `CTS ${+s.clearToSend} / DSR ${+s.dataSetReady} / DCD ${+s.dataCarrierDetect} / RI ${+s.ringIndicator}`; });
+  async function sendCommand(command, mode, ending) {
+    if (busy || (!demoTimer && (!connection.port || connection.closing))) throw new Error('Connect a serial port first.');
+    const bytes = mode === 'hex' ? hexBytes(command) : new TextEncoder().encode(command + ending.replace(/\\r/g,'\r').replace(/\\n/g,'\n'));
+    if (demoTimer) status('Demo command recorded locally; no bytes sent to hardware.'); else await connection.send(bytes);
+    tx += bytes.length;
+    add('TX', new TextDecoder().decode(bytes), Array.from(bytes,b=>b.toString(16).padStart(2,'0').toUpperCase()).join(' '));
+    if (command && history.at(-1) !== command) { history.push(command); if (history.length > 100) history.shift(); }
+    historyIndex = history.length;
+  }
+  $('sendForm').onsubmit = guard(async event => {
+    event.preventDefault();
+    await sendCommand($('command').value, $('sendMode').value, $('ending').value);
+    $('command').value = '';
+  });
+  $('command').onkeydown = e => { if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); historyIndex = Math.max(0,Math.min(history.length,historyIndex + (e.key === 'ArrowUp' ? -1 : 1))); $('command').value = history[historyIndex] || ''; } };
+  $('sendMode').onchange = () => { $('ending').disabled = $('sendMode').value === 'hex'; $('command').placeholder = $('ending').disabled ? 'A0 01 FF' : 'Enter a command…'; };
+  function schedule() { if (!rendering) { rendering = true; requestAnimationFrame(() => { rendering = false; render(); }); } }
+  function render() {
+    $('traffic').textContent = `RX ${rx.toLocaleString()} B · TX ${tx.toLocaleString()} B`;
+    $('bufferInfo').textContent = `${entries.length.toLocaleString()} / 10,000 entries`;
+    if (paused) return;
+    if (!$('terminalView').hidden) {
+      const terminal = $('terminal'), scroll = terminal.scrollTop;
+      const query = $('search').value.toLowerCase();
+      const matches = entry => ($('hexView').checked ? entry.hex : entry.text).toLowerCase().includes(query);
+      const candidates = entries.filter(e => ($('hexView').checked ? e.direction !== 'RX' : e.direction !== 'RAW') &&
+        ($('direction').value === 'all' || (e.direction === 'RAW' ? 'RX' : e.direction) === $('direction').value));
+      $('matchCount').textContent = `${query ? candidates.filter(matches).length.toLocaleString() : 0} matches`;
+      const visible = candidates.filter(e => !$('filterOnly').checked || !query || matches(e)).slice(-1500);
+      if (visible.length) {
+        const fragment = document.createDocumentFragment();
+        for (const entry of visible) { const row = document.createElement('div'); row.className = `entry ${entry.direction.toLowerCase()}`; if ($('timestamps').checked) { const time = document.createElement('time'); time.textContent = entry.time.slice(11,23); row.append(time); } const tag = document.createElement('b'); tag.textContent = entry.direction === 'RAW' ? 'RX' : entry.direction; const body = document.createElement('span'); body.className = 'payload'; highlight(body, $('hexView').checked ? entry.hex : entry.text, query); row.append(tag,body); fragment.append(row); }
+        terminal.replaceChildren(fragment);
+        terminal.scrollTop = $('autoscroll').checked ? terminal.scrollHeight : scroll;
+      } else { terminal.replaceChildren(); if (entries.length) { const message = document.createElement('p'); message.className = 'hint'; message.textContent = 'No entries match this view.'; terminal.append(message); } }
+    } else drawPlot();
+  }
+  $('pause').onclick = () => { paused = !paused; $('pause').textContent = paused ? 'Resume view' : 'Pause view'; schedule(); };
+  $('search').oninput = schedule;
+  for (const id of ['filterOnly','direction']) $(id).onchange = schedule;
+  for (const id of ['timestamps','hexView','autoscroll']) $(id).onchange = schedule;
+  $('clear').onclick = () => { entries = []; samples = []; rx = tx = 0; lines.pending = ''; $('terminal').replaceChildren(); schedule(); status('Buffer and plot cleared.'); };
+  function tab(plot) { $('terminalView').hidden = plot; $('plotView').hidden = !plot; $('terminalTab').setAttribute('aria-selected',String(!plot)); $('plotTab').setAttribute('aria-selected',String(plot)); schedule(); }
+  $('terminalTab').onclick = () => tab(false); $('plotTab').onclick = () => tab(true);
+  for (const id of ['terminalTab','plotTab']) $(id).onkeydown = e => { if (['ArrowLeft','ArrowRight'].includes(e.key)) { e.preventDefault(); const plot = id === 'terminalTab'; tab(plot); $(plot ? 'plotTab' : 'terminalTab').focus(); } };
+  function drawPlot() {
+    const canvas = $('plot'), rect = canvas.getBoundingClientRect(), scale = devicePixelRatio || 1;
+    if (!rect.width) return;
+    canvas.width = Math.round(rect.width * scale); canvas.height = Math.round(rect.height * scale);
+    const ctx = canvas.getContext('2d'); ctx.scale(scale,scale);
+    const w = rect.width, h = rect.height, left = 58, right = w - 12, top = 20, bottom = h - 25;
+    let lo = Infinity, hi = -Infinity, count = 0;
+    for (const s of samples) { count = Math.max(count,s.values.length); for (const v of s.values) { lo = Math.min(lo,v); hi = Math.max(hi,v); } }
+    if (!samples.length) { lo = -1; hi = 1; }
+    if (lo === hi) { lo -= Math.max(1,Math.abs(lo)*.1); hi += Math.max(1,Math.abs(hi)*.1); }
+    const span = hi - lo;
+    ctx.font = '10px monospace'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) { const y = top + (bottom-top)*i/4; ctx.strokeStyle = '#25303b'; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(right,y); ctx.stroke(); ctx.fillStyle = '#8594a6'; ctx.fillText((hi-span*i/4).toPrecision(4),2,y+3); }
+    ctx.fillStyle = '#8594a6'; ctx.fillText('oldest',left,h-5); ctx.fillText('latest',Math.max(left,right-36),h-5);
+    for (let channel=0; channel<count; channel++) { ctx.strokeStyle = colors[channel]; ctx.lineWidth=1.5; ctx.beginPath(); let pen=false; samples.forEach((s,i) => { if (s.values[channel] === undefined) { pen=false; return; } const x=left+(right-left)*i/Math.max(1,samples.length-1), y=bottom-(s.values[channel]-lo)/span*(bottom-top); if (pen) ctx.lineTo(x,y); else {ctx.moveTo(x,y); pen=true;} }); ctx.stroke(); }
+    $('legend').replaceChildren();
+    for (let i=0;i<count;i++) { const label=document.createElement('span'); label.style.color=colors[i]; label.textContent=`● CH ${i+1}  ${samples.at(-1)?.values[i] ?? '—'}`; $('legend').append(label); }
+    if (!samples.length) {ctx.fillStyle='#a4b0bd';ctx.fillText('Waiting for numeric lines. Try the demo.',left+10,h/2);}
+  }
+  new ResizeObserver(schedule).observe($('plot'));
+  function download(content, type, extension) { const url=URL.createObjectURL(new Blob([content],{type})); const a=document.createElement('a'); a.href=url; a.download=`BrowserSerialTool-${new Date().toISOString().replace(/[:.]/g,'-')}.${extension}`; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); status(`Exported ${extension.toUpperCase()}${demoTimer ? ' (contains demo data)' : ''}.`); }
+  $('exportText').onclick=()=>download(entries.filter(e=>e.direction!=='RAW').map(e=>`${e.time} ${e.direction} ${e.text}`).join('\n'),'text/plain;charset=utf-8','txt');
+  $('exportCSV').onclick=()=>download(csvHeader+entries.map(csvEntry).join(''),'text/csv;charset=utf-8','csv');
+  $('exportPlot').onclick=()=>{ const count=Math.max(0,...samples.map(s=>s.values.length)); download(['timestamp,'+Array.from({length:count},(_,i)=>`channel_${i+1}`).join(','),...samples.map(s=>[s.time,...Array.from({length:count},(_,i)=>s.values[i]??'')].join(','))].join('\r\n'),'text/csv;charset=utf-8','csv'); };
+  $('demo').onclick=guard(async()=>{ if(demoTimer) return disconnect(); if(connection.port) return; demoStart=performance.now(); status('Demo mode: simulated numeric data. No serial port is open.'); demoTimer=setInterval(()=>{const t=(performance.now()-demoStart)/1000;receive(new TextEncoder().encode(`${(24+4*Math.sin(t)).toFixed(2)},${(18+3*Math.cos(t*.7)).toFixed(2)},${(12+2*Math.sin(t*1.7)).toFixed(2)}\n`));},100); update(); });
+  function highlight(element, text, query) {
+    if (!query) { element.textContent = text; return; }
+    const lower = text.toLowerCase(); let from = 0, found;
+    while ((found = lower.indexOf(query, from)) !== -1) {
+      element.append(document.createTextNode(text.slice(from, found)));
+      const mark = document.createElement('mark'); mark.textContent = text.slice(found, found + query.length); element.append(mark);
+      from = found + query.length;
+    }
+    element.append(document.createTextNode(text.slice(from)));
+  }
+  function persist(next) {
+    // Commit the in-memory change only after persistent storage succeeds.
+    localStorage.setItem(preferenceKey, JSON.stringify(next)); preferences = next;
+  }
+  function upsert(collection, item) {
+    const result = collection.filter(existing => existing.name !== item.name);
+    if (result.length >= 50) throw new Error('The limit is 50 saved items. Delete one first.');
+    return [...result, item];
+  }
+  function nameFrom(id) {
+    const name = $(id).value.trim(); if (!name) throw new Error('Enter a name first.'); return name;
+  }
+  function sendSettings() { return {mode:$('sendMode').value, ending:$('ending').value}; }
+  function updateProfileButtons() {
+    const selected = $('profiles').value !== '';
+    $('loadProfile').disabled = $('deleteProfile').disabled = !selected;
+  }
+  function renderProfiles(selected = '') {
+    $('profiles').replaceChildren(new Option('Choose a saved profile', ''));
+    preferences.profiles.forEach((p, i) => $('profiles').add(new Option(p.name, String(i))));
+    $('profiles').value = selected; updateProfileButtons();
+  }
+  $('profiles').onchange = () => { updateProfileButtons(); const profile = preferences.profiles[Number($('profiles').value)]; if ($('profiles').value !== '' && profile) $('profileName').value = profile.name; };
+  $('saveProfile').onclick = guard(() => {
+    const profile = {name:nameFrom('profileName'), baud:Number($('baud').value), bits:Number($('bits').value), stop:Number($('stop').value), parity:$('parity').value, flow:$('flow').value, ...sendSettings()};
+    if (!readPreferences(JSON.stringify({profiles:[profile]})).profiles.length) throw new Error('Check the serial settings before saving.');
+    const next = upsert(preferences.profiles, profile);
+    persist({...preferences, profiles:next}); renderProfiles(String(next.length - 1)); status(`Saved profile “${profile.name}”. Saving the same name replaces it.`);
+  });
+  $('loadProfile').onclick = guard(() => {
+    if (connection.port || demoTimer || busy || $('profiles').value === '') return;
+    const p = preferences.profiles[Number($('profiles').value)];
+    for (const key of ['baud','bits','stop','parity','flow']) $(key).value = p[key];
+    $('sendMode').value = p.mode; $('ending').value = p.ending; $('sendMode').onchange();
+    status(`Loaded profile “${p.name}”. Choose a port and connect when ready.`);
+  });
+  $('deleteProfile').onclick = guard(() => {
+    if ($('profiles').value === '') return;
+    persist({...preferences, profiles:preferences.profiles.filter((_,i)=>i!==Number($('profiles').value))}); renderProfiles(); status('Profile deleted.');
+  });
+  function renderShortcuts() {
+    $('shortcutList').replaceChildren(); $('shortcutCount').textContent = `(${preferences.shortcuts.length})`;
+    preferences.shortcuts.forEach((shortcut, index) => {
+      const row = document.createElement('div'); row.className = 'shortcut-row';
+      const send = document.createElement('button'); send.className = 'shortcut-send secondary'; send.textContent = `Send ${shortcut.name}`;
+      send.title = `${shortcut.mode}: ${shortcut.command}`;
+      send.onclick = guard(() => sendCommand(shortcut.command, shortcut.mode, shortcut.ending));
+      const load = document.createElement('button'); load.textContent = 'Load'; load.setAttribute('aria-label',`Load ${shortcut.name}`);
+      load.onclick = () => { $('command').value = shortcut.command; $('sendMode').value = shortcut.mode; $('ending').value = shortcut.ending; $('sendMode').onchange(); $('shortcutName').value = shortcut.name; $('command').focus(); };
+      const remove = document.createElement('button'); remove.textContent = '×'; remove.setAttribute('aria-label',`Delete ${shortcut.name}`);
+      remove.onclick = guard(() => { persist({...preferences,shortcuts:preferences.shortcuts.filter((_,i)=>i!==index)}); renderShortcuts(); status('Shortcut deleted.'); });
+      row.append(send, load, remove); $('shortcutList').append(row);
+    });
+    update();
+  }
+  $('saveShortcut').onclick = guard(() => {
+    const shortcut = {name:nameFrom('shortcutName'), command:$('command').value, ...sendSettings()};
+    if (!shortcut.command) throw new Error('Enter a command in the send field first.');
+    if (shortcut.mode === 'hex') hexBytes(shortcut.command);
+    persist({...preferences, shortcuts:upsert(preferences.shortcuts,shortcut)}); renderShortcuts(); status(`Saved command “${shortcut.name}”. Saving the same name replaces it.`);
+  });
+  const canRecord = typeof window.showSaveFilePicker === 'function' && window.isSecureContext;
+  function updateRecording() {
+    $('startRecording').disabled = !canRecord || !!logger || recordingBusy;
+    $('stopRecording').disabled = !logger || recordingBusy;
+    $('recordBadge').textContent = recordingBusy ? 'Finalizing…' : logger ? 'Recording' : 'Not recording';
+    $('recordBadge').classList.toggle('online', !!logger);
+    if (!canRecord) $('recordInfo').textContent = 'Direct file recording is unavailable in this browser/context. Use buffer exports, or desktop Chrome/Edge in a secure context.';
+  }
+  $('startRecording').onclick = guard(async () => {
+    if (logger || recordingBusy) return;
+    // Invoke the picker directly in the click gesture; never request access on page load.
+    const handle = await window.showSaveFilePicker({suggestedName:`BrowserSerialTool-${new Date().toISOString().replace(/[:.]/g,'-')}.csv`, types:[{description:'Serial CSV log',accept:{'text/csv':['.csv']}}]});
+    recordingBusy = true; updateRecording();
+    try {
+      const writer = await handle.createWritable();
+      const active = new DiskLogger(writer, error => {
+        $('recordInfo').textContent = `Recording failed: ${error.message} The recording file was not finalized. Buffer exports remain available.`;
+        if (logger === active) logger = null; recordingBusy = true; updateRecording();
+        active.stop().catch(()=>{}).finally(()=>{recordingBusy=false; updateRecording();}); status(`Recording failed: ${error.message}`, true);
+      });
+      logger = active;
+      logger.append(csvHeader);
+      $('recordInfo').textContent = `Recording new traffic to ${handle.name}. Includes raw bytes and decoded lines${demoTimer ? ' (simulated demo data)' : ''}. Stop & save before closing this tab.`;
+      status('Continuous recording started. Existing buffer entries are not included.');
+    } finally { recordingBusy = false; updateRecording(); }
+  });
+  $('stopRecording').onclick = guard(async () => {
+    if (!logger || recordingBusy) return;
+    const active = logger;
+    logger = null; recordingBusy = true; updateRecording();
+    try { await active.stop(); $('recordInfo').textContent = `Saved ${(active.bytes / 1024).toFixed(1)} KiB of traffic. Recording stopped.`; status('Recording finalized and saved.'); }
+    finally { recordingBusy = false; updateRecording(); }
+  });
+  if (supported) { navigator.serial.addEventListener('connect',refresh); navigator.serial.addEventListener('disconnect',guard(async event=>{if(event.target===connection.port) await disconnect(); await refresh();})); refresh(); }
+  $('unsupported').hidden=supported;
+  window.addEventListener('beforeunload',event=>{if(connection.port || logger || recordingBusy){event.preventDefault();event.returnValue='';}});
+  try { preferences = readPreferences(localStorage.getItem(preferenceKey)); }
+  catch { status('Saved settings could not be loaded. Check browser storage permissions if saving fails.', true); }
+  renderProfiles(); renderShortcuts(); updateRecording(); update();
+})();
+</script></body></html>

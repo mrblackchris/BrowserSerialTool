@@ -1,0 +1,21 @@
+name: Check
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: node --check src/core.js && node --check src/app.js
+      - run: node --test tests/core.test.cjs
+      - run: python3 scripts/build.py --check
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
